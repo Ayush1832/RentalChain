@@ -1,0 +1,348 @@
+# 📘 PLATFORM DESIGN DOCUMENT
+
+## Blockchain-Based Rental Evidence & Trust Infrastructure (India)
+
+---
+
+# 1. Executive Summary
+
+India’s rental market is largely **informal, fragmented, and trust-deficient**, with limited standardisation in agreements, payments, and dispute handling. Most rental transactions lack verifiable audit trails, leading to frequent disputes, legal friction, and inefficiencies.
+
+Unlike existing platforms that focus only on property discovery, this platform focuses on the **entire rental lifecycle** — from agreement creation to move-out — by introducing a **blockchain-based evidence and trust layer**.
+
+The platform anchors key rental events such as:
+
+* Agreements
+* Payment records
+* Property condition evidence  
+
+on a **public blockchain**, ensuring tamper-proof, time-stamped, and verifiable records.
+
+**Core Principle:**
+Do not change how renting works — **digitise and secure it.**
+
+---
+
+# 2. Target Users
+
+## 2.1 Tenants
+
+* Salaried professionals
+* Students
+* Migrant workers
+* Families
+
+## 2.2 Landlords
+
+* Individual property owners (1–5 properties)
+* Semi-professional landlords
+* Property managers (future phase)
+
+## 2.3 Institutional Stakeholders (Future)
+
+* Government housing departments
+* Banks / NBFCs
+* Legal systems
+
+---
+
+# 3. Core Problems in Indian Rental Market
+
+## 3.1 Tenant Problems
+
+* Lack of reliable documentation for agreements and payments
+* Disputes due to unclear or altered terms
+* No verifiable rent history for loans/visa/employment
+* No structured move-in/move-out evidence
+* Informal communication leading to conflicts
+
+## 3.2 Landlord Problems
+
+* Lack of reliable tenant verification
+* Payment tracking inconsistencies
+* Property damage disputes
+* Legal documentation complexity
+* No standardised system for managing rentals
+
+---
+
+# 4. Platform Philosophy
+
+## What the Platform Does NOT Do
+
+* Does NOT replace legal rental agreements
+* Does NOT hold user funds or deposits
+* Does NOT introduce crypto or tokens
+* Does NOT disrupt existing rental flow
+
+## What the Platform DOES Do
+
+* Anchors rental events on blockchain
+* Creates tamper-proof evidence trails
+* Standardises rental lifecycle processes
+* Enables trusted verification across stakeholders
+
+---
+
+# 5. High-Level Architecture
+
+## 5.1 Core Layers
+
+### 1. Identity & Trust Layer
+
+* KYC (Aadhaar/PAN – off-chain)
+* Rental Digital Identity (DID)
+* Reputation tracking
+
+---
+
+### 2. Agreement Layer
+
+* Legal PDF agreement generation
+* Digital signing
+* Blockchain hash anchoring
+
+---
+
+### 3. Payment Record Layer
+
+* UPI / bank payments
+* Transaction proof hashing
+* Immutable payment logs
+
+---
+
+### 4. Evidence Layer
+
+* Move-in / move-out photos
+* Maintenance records
+* Inspection reports
+* All hashed on-chain
+
+---
+
+### 5. Dispute & Audit Layer
+
+* Time-stamped logs
+* Full audit trail
+* Evidence-backed resolution
+
+---
+
+# 6. Blockchain Architecture
+
+## Type:
+
+✅ Public Blockchain (Ethereum for now)
+
+## Why:
+
+* Privacy compliant
+* Government aligned
+* Controlled access
+* High performance
+
+## On-Chain Data:
+
+* Agreement hash
+* Payment proof hash
+* Evidence hash
+* Event timestamps
+
+## Off-Chain Data:
+
+* Documents
+* Images
+* Personal data
+
+---
+
+# 7. Revenue Model
+
+## 7.1 Agreement Processing Fee
+
+₹499 – ₹999 per agreement
+
+---
+
+## 7.2 Rent Processing Fee (Optional)
+
+0.5% – 1% per transaction
+
+---
+
+## 7.3 Landlord Subscription
+
+₹299 – ₹999/month
+Includes:
+
+* Verified badge
+* Tenant insights
+* Rental analytics
+* Tax summaries
+
+---
+
+## 7.4 Dispute Resolution Service
+
+Premium fast-track dispute handling
+
+---
+
+## 7.5 Government SaaS (Future)
+
+* Rental analytics dashboard
+* Urban data insights
+* Compliance reports
+
+---
+
+# 8. End-to-End Rental Lifecycle
+
+## 8.1 Onboarding
+
+* KYC verification
+* Rental ID creation
+* Property upload (for landlords)
+
+---
+
+## 8.2 Property Discovery
+
+* Verified listings
+* Basic filtering
+* Direct tenant-landlord interaction
+
+---
+
+## 8.3 Agreement Creation
+
+* Auto-generated legal agreement
+* E-signature
+* Blockchain anchoring
+
+---
+
+## 8.4 Move-In
+
+* Deposit recorded (off-chain)
+* Property condition photos uploaded
+* Evidence hashed on-chain
+
+---
+
+## 8.5 Monthly Operations
+
+* Rent paid via UPI
+* Payment logged and anchored
+* Maintenance tickets tracked
+
+---
+
+## 8.6 Dispute Handling
+
+* Structured communication
+* Evidence comparison
+* Time-stamped records
+
+---
+
+## 8.7 Move-Out
+
+* Inspection process
+* Evidence comparison
+* Final settlement record
+
+---
+
+# 9. Identity & Reputation System
+
+## Rental Identity (DID)
+
+* Unique user identity
+* Portable across rentals
+
+## Reputation Score Based On:
+
+* Payment history
+* Agreement adherence
+* Dispute outcomes
+
+---
+
+# 10. Data Privacy & Security
+
+* No personal data stored on blockchain
+* Only hashes stored on-chain
+* Off-chain encrypted storage
+* DPDP Act compliant
+* Role-based access control
+
+---
+
+# 11. Technology Stack
+
+## Blockchain
+
+* Ethereum(sepolia for testing)
+
+## Backend
+
+* Node.js + PostgreSQL
+
+## Frontend
+
+* React / React Native
+
+## Storage
+
+* IPFS / Cloud storage
+
+## Payments
+
+* UPI integration
+
+---
+
+# 12. Go-To-Market Strategy
+
+## Phase 1 – MVP (0–6 months)
+
+* Single city pilot
+* Fiat-only
+* Manual verification
+* Focus on lifecycle tracking
+
+---
+
+## Phase 2 – Blockchain Integration (6–12 months)
+
+* Ethereum integration
+* Evidence anchoring
+* Early partnerships
+
+---
+
+## Phase 3 – Scale (12–24 months)
+
+* Multi-city expansion
+* Government pilot
+* Institutional partnerships
+
+---
+
+# 13. Government Alignment
+
+## Supports:
+
+* Digital India
+* Smart Cities Mission
+* Rental formalisation
+* Reduced legal disputes
+
+## Value to Government:
+
+* Transparent rental data
+* Reduced litigation
+* Urban housing insights
+
