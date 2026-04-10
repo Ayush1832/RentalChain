@@ -21,10 +21,10 @@ export function errorHandler(
   }
 
   // Known app errors
-  if ((err as { statusCode?: number }).statusCode) {
-    const appErr = err as { statusCode: number; code: string; message: string };
+  const appErr = err as unknown as { statusCode?: number; code?: string; message: string };
+  if (appErr.statusCode) {
     res.status(appErr.statusCode).json({
-      error: { code: appErr.code, message: appErr.message, statusCode: appErr.statusCode },
+      error: { code: appErr.code ?? 'ERROR', message: appErr.message, statusCode: appErr.statusCode },
     });
     return;
   }

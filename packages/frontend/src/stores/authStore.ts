@@ -4,8 +4,10 @@ import { persist } from 'zustand/middleware';
 interface User {
   id: string;
   phone: string;
+  fullName?: string;
+  email?: string;
   role: 'TENANT' | 'LANDLORD' | 'BOTH' | 'ADMIN' | 'MEDIATOR';
-  kycStatus: 'PENDING' | 'VERIFIED' | 'REJECTED';
+  kycStatus: 'PENDING' | 'SUBMITTED' | 'VERIFIED' | 'REJECTED';
   didHash?: string;
 }
 

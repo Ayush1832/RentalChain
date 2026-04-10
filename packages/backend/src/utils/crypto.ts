@@ -49,6 +49,15 @@ export function hashString(str: string): string {
 }
 
 /**
+ * Deterministic HMAC search hash for encrypted PII fields.
+ * Used to look up rows by encrypted values without full decryption.
+ */
+export function searchHash(value: string): string {
+  const key = process.env.ENCRYPTION_KEY || '0'.repeat(64);
+  return crypto.createHmac('sha256', Buffer.from(key, 'hex')).update(value).digest('hex');
+}
+
+/**
  * Generate a DID hash for a user.
  */
 export function generateDIDHash(userId: string, createdAt: Date): string {

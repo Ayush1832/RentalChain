@@ -1,7 +1,8 @@
 type Step = 'hash' | 'ipfs' | 'chain' | 'done';
 
 interface AnchoringProgressProps {
-  currentStep: Step;
+  /** Either a Step name or a 0-based index (0=hash, 1=ipfs, 2=chain, 3=done) */
+  currentStep: Step | number;
   txHash?: string;
 }
 
@@ -15,7 +16,7 @@ const STEPS: { key: Step; label: string }[] = [
 const ORDER: Step[] = ['hash', 'ipfs', 'chain', 'done'];
 
 export function AnchoringProgress({ currentStep, txHash }: AnchoringProgressProps) {
-  const currentIdx = ORDER.indexOf(currentStep);
+  const currentIdx = typeof currentStep === 'number' ? currentStep : ORDER.indexOf(currentStep);
 
   return (
     <div className="space-y-2">

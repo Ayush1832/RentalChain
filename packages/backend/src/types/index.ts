@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
 export type UserRole = 'TENANT' | 'LANDLORD' | 'BOTH' | 'ADMIN' | 'MEDIATOR';
-export type KYCStatus = 'PENDING' | 'VERIFIED' | 'REJECTED';
+export type KYCStatus = 'PENDING' | 'SUBMITTED' | 'VERIFIED' | 'REJECTED';
 export type AgreementStatus = 'DRAFT' | 'PENDING_SIGNATURES' | 'ACTIVE' | 'EXPIRED' | 'TERMINATED';
 export type PaymentStatus = 'PENDING' | 'CONFIRMED' | 'DISPUTED';
 export type PaymentMethod = 'UPI' | 'BANK_TRANSFER' | 'CASH' | 'CHEQUE';

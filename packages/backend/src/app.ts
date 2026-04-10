@@ -6,9 +6,10 @@ import { authRouter } from './routes/auth';
 import { usersRouter } from './routes/users';
 import { propertiesRouter } from './routes/properties';
 import { agreementsRouter } from './routes/agreements';
+import { agreementPaymentsRouter } from './routes/agreements.payments';
 import { paymentsRouter } from './routes/payments';
-import { evidenceRouter } from './routes/evidence';
-import { maintenanceRouter } from './routes/maintenance';
+import { agreementEvidenceRouter, evidenceRouter } from './routes/evidence';
+import { agreementMaintenanceRouter, maintenanceRouter } from './routes/maintenance';
 import { disputesRouter } from './routes/disputes';
 import { verifyRouter } from './routes/verify';
 import { adminRouter } from './routes/admin';
@@ -49,6 +50,11 @@ app.use('/api', apiLimiter);
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// Mount agreement sub-routes before the main agreements router
+agreementsRouter.use('/:id/payments', agreementPaymentsRouter);
+agreementsRouter.use('/:id/evidence', agreementEvidenceRouter);
+agreementsRouter.use('/:id/maintenance', agreementMaintenanceRouter);
 
 // Routes
 app.use('/api/v1/auth', authRouter);

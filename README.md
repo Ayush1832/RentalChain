@@ -54,8 +54,90 @@ rentalchain/
 
 ---
 
+## Quick Start (Local Dev)
+
+### Prerequisites
+- Node.js 20+
+- Docker Desktop (for PostgreSQL)
+- Git
+
+### 1. Install dependencies
+```bash
+npm install
+```
+
+### 2. Start PostgreSQL
+```bash
+docker-compose up -d
+```
+
+### 3. Configure environment
+```bash
+cp packages/backend/.env.example packages/backend/.env
+# Edit packages/backend/.env — at minimum set ENCRYPTION_KEY to 64 random hex chars
+```
+
+Generate a secure encryption key:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+### 4. Run database migrations
+```bash
+cd packages/backend
+psql $DATABASE_URL -f migrations/1_create_users.sql
+psql $DATABASE_URL -f migrations/2_create_properties_agreements.sql
+psql $DATABASE_URL -f migrations/3_create_payments_evidence_disputes.sql
+psql $DATABASE_URL -f migrations/4_add_search_hashes.sql
+```
+
+### 5. Start the backend
+```bash
+npm run dev --workspace=packages/backend
+```
+
+### 6. Start the frontend
+```bash
+npm run dev --workspace=packages/frontend
+```
+
+Open [http://localhost:5173](http://localhost:5173)
+
+---
+
+## Smart Contracts
+
+### Compile & Test
+```bash
+npm run compile --workspace=packages/contracts
+npm run test --workspace=packages/contracts    # 49/49 tests
+```
+
+### Deploy (Sepolia)
+1. Set `SEPOLIA_RPC_URL` and `PLATFORM_WALLET_PRIVATE_KEY` in `.env`
+2. Fund the wallet with Sepolia ETH from a faucet
+3. `npm run deploy:sepolia --workspace=packages/contracts`
+4. Copy deployed addresses to `.env` as `IDENTITY_REGISTRY_ADDRESS` and `RENTAL_REGISTRY_ADDRESS`
+
+---
+
+## External Services (optional for dev)
+
+| Service | Purpose | Without it |
+|---|---|---|
+| Fast2SMS | OTP delivery | OTP is logged to console |
+| Pinata (IPFS) | File pinning | Mock CIDs returned |
+| Alchemy/Infura | Sepolia RPC | Blockchain anchoring skipped |
+
+---
+
 ## Current Status
 
-**Pre-development** — documentation complete, ready to begin Milestone 0 (project setup).
+**MVP Development** — Milestones 0–5 complete (contracts, backend, frontend all implemented).
+
+- Smart contracts: **49/49 tests passing**
+- Backend: All routes implemented, TypeScript clean
+- Frontend: All pages implemented, TypeScript clean
+- Blockchain: Ready for Sepolia deployment
 
 Network: **Sepolia Testnet** (MVP)

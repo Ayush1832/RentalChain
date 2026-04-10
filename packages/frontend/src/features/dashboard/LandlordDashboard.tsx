@@ -18,7 +18,7 @@ export function LandlordDashboard() {
   const activeCount = properties?.filter((p: { listingStatus: string }) => p.listingStatus === 'RENTED').length ?? 0;
   const totalCount = properties?.length ?? 0;
   const pendingConfirmations = agreements?.filter(
-    (a: { status: string; pendingConfirmations?: number }) => a.pendingConfirmations > 0
+    (a: { status: string; pendingConfirmations?: number }) => (a.pendingConfirmations ?? 0) > 0
   ).length ?? 0;
 
   return (
