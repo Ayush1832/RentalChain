@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
@@ -25,6 +26,7 @@ function PropertyCard({ p }: { p: Property }) {
           <span className={`text-xs px-2 py-1 rounded-full font-medium ${
             p.listingStatus === 'ACTIVE' ? 'bg-green-100 text-green-700' :
             p.listingStatus === 'RENTED' ? 'bg-blue-100 text-blue-700' :
+            p.listingStatus === 'DRAFT' ? 'bg-gray-100 text-gray-500' :
             'bg-gray-100 text-gray-600'
           }`}>{p.listingStatus}</span>
         </div>
@@ -33,7 +35,10 @@ function PropertyCard({ p }: { p: Property }) {
           <p className="text-xs text-gray-400">{p.propertyType}</p>
         </div>
         {p.bedrooms && (
-          <p className="text-xs text-gray-400 mt-1">{p.bedrooms} BHK • {p.areaSqft} sq ft</p>
+          <p className="text-xs text-gray-400 mt-1">{p.bedrooms} BHK{p.areaSqft ? ` • ${p.areaSqft} sq ft` : ''}</p>
+        )}
+        {p.isFurnished && (
+          <span className="inline-block mt-2 text-xs px-1.5 py-0.5 rounded bg-brand-50 text-brand-600 font-medium">Furnished</span>
         )}
       </div>
     </Link>
@@ -42,13 +47,24 @@ function PropertyCard({ p }: { p: Property }) {
 
 export function PropertiesPage() {
   const { user } = useAuthStore();
+  const [tab, setTab] = useState<'all' | 'mine'>('all');
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['properties'],
-    queryFn: () => api.get<{ properties: Property[] }>('/properties').then((r) => r.data.properties),
+  const isLandlord = user?.role === 'LANDLORD' || user?.role === 'BOTH' || user?.role === 'ADMIN';
+
+  const { data: allData, isLoading: allLoading } = useQuery({
+    queryKey: ['properties', 'all'],
+    queryFn: () => api.get<{ properties: Property[] }>('/properties?status=ACTIVE').then((r) => r.data.properties),
+    enabled: tab === 'all',
   });
 
-  const isLandlord = user?.role === 'LANDLORD' || user?.role === 'BOTH';
+  const { data: myData, isLoading: myLoading } = useQuery({
+    queryKey: ['properties', 'mine'],
+    queryFn: () => api.get<{ properties: Property[] }>('/properties?mine=true').then((r) => r.data.properties),
+    enabled: tab === 'mine' && isLandlord,
+  });
+
+  const data = tab === 'mine' ? myData : allData;
+  const isLoading = tab === 'mine' ? myLoading : allLoading;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -60,6 +76,28 @@ export function PropertiesPage() {
           </Link>
         )}
       </div>
+
+      {/* Tabs */}
+      {isLandlord && (
+        <div className="flex gap-1 mb-6 bg-gray-100 p-1 rounded-lg w-fit">
+          <button
+            onClick={() => setTab('all')}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              tab === 'all' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Browse All
+          </button>
+          <button
+            onClick={() => setTab('mine')}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              tab === 'mine' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            My Listings
+          </button>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -75,8 +113,10 @@ export function PropertiesPage() {
         </div>
       ) : !data?.length ? (
         <div className="text-center py-16">
-          <p className="text-gray-400 text-lg">No properties found</p>
-          {isLandlord && (
+          <p className="text-gray-400 text-lg">
+            {tab === 'mine' ? 'You haven\'t listed any properties yet' : 'No properties found'}
+          </p>
+          {isLandlord && tab === 'mine' && (
             <Link to="/properties/new" className="mt-4 inline-block btn-primary">
               List your first property
             </Link>
