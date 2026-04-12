@@ -2,6 +2,7 @@ import { Router, Response, NextFunction } from 'express';
 import { authenticate, requireRole } from '../middleware/authenticate';
 import { AuthRequest } from '../types';
 import { findUserById, setKYCStatus, listPendingKYC, listAllUsers, getAdminAnalytics } from '../models/userModel';
+import { db } from '../models/db';
 import { approveKYC } from '../models/kycModel';
 import { listAllDisputes } from '../models/disputeModel';
 import { generateDIDHash } from '../utils/crypto';
@@ -83,5 +84,26 @@ adminRouter.get('/analytics', async (_req, res: Response, next: NextFunction) =>
   try {
     const analytics = await getAdminAnalytics();
     res.json(analytics);
+  } catch (err) { next(err); }
+});
+
+// PUT /admin/disputes/:id/assign
+adminRouter.put('/disputes/:id/assign', async (req, res: Response, next: NextFunction) => {
+  try {
+    const { mediatorId } = req.body;
+    if (!mediatorId) {
+      res.status(400).json({ error: { code: 'MISSING_MEDIATOR', message: 'mediatorId required', statusCode: 400 } });
+      return;
+    }
+    const mediator = await findUserById(mediatorId);
+    if (!mediator) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Mediator not found', statusCode: 404 } });
+      return;
+    }
+    await db.query(
+      `UPDATE disputes SET status='UNDER_REVIEW', assigned_mediator_id=$1, updated_at=NOW() WHERE id=$2`,
+      [mediatorId, req.params["id"] as string]
+    );
+    res.json({ message: 'Mediator assigned', mediatorId });
   } catch (err) { next(err); }
 });

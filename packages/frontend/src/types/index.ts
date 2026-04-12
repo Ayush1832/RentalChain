@@ -101,6 +101,7 @@ export interface Evidence {
   evidenceHash?: string;
   blockchainTxHash?: string;
   blockchainAnchoredAt?: string;
+  onChainIndex?: number;
   createdAt: string;
 }
 

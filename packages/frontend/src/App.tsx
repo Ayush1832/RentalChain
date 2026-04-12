@@ -33,6 +33,7 @@ import { RecordPaymentPage } from './features/payments/RecordPaymentPage';
 
 // Evidence
 import { UploadEvidencePage } from './features/evidence/UploadEvidencePage';
+import { EvidenceDetailPage } from './features/evidence/EvidenceDetailPage';
 
 // Maintenance
 import { MaintenancePage, AgreementMaintenancePage } from './features/maintenance/MaintenancePage';
@@ -91,6 +92,7 @@ export default function App() {
 
           {/* Evidence */}
           <Route path="/agreements/:id/evidence/upload" element={<UploadEvidencePage />} />
+          <Route path="/evidence/:id" element={<EvidenceDetailPage />} />
 
           {/* Maintenance */}
           <Route path="/maintenance" element={<MaintenancePage />} />
