@@ -83,6 +83,31 @@ propertiesRouter.put('/:id', authenticate, async (req: AuthRequest, res: Respons
   } catch (err) { next(err); }
 });
 
+// ─── DELETE /properties/:id ──────────────────────────────────────────────────
+
+propertiesRouter.delete('/:id', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const property = await getPropertyById(req.params["id"] as string);
+    if (!property) { res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Property not found', statusCode: 404 } }); return; }
+    if (property.landlordId !== req.user!.userId && req.user!.role !== 'ADMIN') {
+      res.status(403).json({ error: { code: 'FORBIDDEN', message: 'Not your property', statusCode: 403 } }); return;
+    }
+    // Soft-delete by setting status INACTIVE
+    await updateProperty(req.params["id"] as string, { listingStatus: 'INACTIVE' } as Parameters<typeof updateProperty>[1]);
+    res.json({ message: 'Property deactivated' });
+  } catch (err) { next(err); }
+});
+
+// ─── GET /properties/:id/images ──────────────────────────────────────────────
+
+propertiesRouter.get('/:id/images', async (req, res: Response, next: NextFunction) => {
+  try {
+    const property = await getPropertyById(req.params["id"] as string);
+    if (!property) { res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Property not found', statusCode: 404 } }); return; }
+    res.json({ images: property.images ?? [] });
+  } catch (err) { next(err); }
+});
+
 // ─── POST /properties/:id/images ─────────────────────────────────────────────
 
 propertiesRouter.post('/:id/images', authenticate, upload.array('images', 10), async (req: AuthRequest, res: Response, next: NextFunction) => {

@@ -51,14 +51,24 @@ export function PropertyDetailPage() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{data.title}</h1>
+          <div className="flex items-center gap-3 mb-1">
+            <Link to="/properties" className="text-gray-400 hover:text-gray-600">←</Link>
+            <h1 className="text-2xl font-bold text-gray-900">{data.title}</h1>
+          </div>
           <p className="text-gray-500 mt-1">{data.addressLine1}, {data.city}, {data.state} - {data.pincode}</p>
         </div>
-        <span className={`text-sm px-3 py-1 rounded-full font-medium ${
-          data.listingStatus === 'ACTIVE' ? 'bg-green-100 text-green-700' :
-          data.listingStatus === 'RENTED' ? 'bg-blue-100 text-blue-700' :
-          'bg-gray-100 text-gray-600'
-        }`}>{data.listingStatus}</span>
+        <div className="flex items-center gap-3">
+          <span className={`text-sm px-3 py-1 rounded-full font-medium ${
+            data.listingStatus === 'ACTIVE' ? 'bg-green-100 text-green-700' :
+            data.listingStatus === 'RENTED' ? 'bg-blue-100 text-blue-700' :
+            'bg-gray-100 text-gray-600'
+          }`}>{data.listingStatus}</span>
+          {isOwner && (
+            <Link to={`/properties/${id}/edit`} className="btn-secondary text-sm py-1.5 px-4">
+              Edit
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Images */}

@@ -55,7 +55,7 @@ export function AppShell() {
               ))}
               {user?.role === 'ADMIN' && (
                 <NavLink
-                  to="/admin/kyc"
+                  to="/admin"
                   className={({ isActive }) =>
                     `px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                       isActive ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'

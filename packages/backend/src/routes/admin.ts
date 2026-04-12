@@ -1,7 +1,7 @@
 import { Router, Response, NextFunction } from 'express';
 import { authenticate, requireRole } from '../middleware/authenticate';
 import { AuthRequest } from '../types';
-import { findUserById, setKYCStatus, listPendingKYC } from '../models/userModel';
+import { findUserById, setKYCStatus, listPendingKYC, listAllUsers, getAdminAnalytics } from '../models/userModel';
 import { approveKYC } from '../models/kycModel';
 import { listAllDisputes } from '../models/disputeModel';
 import { generateDIDHash } from '../utils/crypto';
@@ -73,7 +73,15 @@ adminRouter.get('/disputes', async (req, res: Response, next: NextFunction) => {
 // GET /admin/users
 adminRouter.get('/users', async (_req, res: Response, next: NextFunction) => {
   try {
-    const pending = await listPendingKYC();
-    res.json({ users: pending });
+    const users = await listAllUsers();
+    res.json({ users });
+  } catch (err) { next(err); }
+});
+
+// GET /admin/analytics
+adminRouter.get('/analytics', async (_req, res: Response, next: NextFunction) => {
+  try {
+    const analytics = await getAdminAnalytics();
+    res.json(analytics);
   } catch (err) { next(err); }
 });

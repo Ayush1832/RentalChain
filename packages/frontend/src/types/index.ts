@@ -4,9 +4,9 @@ export type AgreementStatus = 'DRAFT' | 'PENDING_SIGNATURES' | 'ACTIVE' | 'TERMI
 export type PaymentMethod = 'UPI' | 'BANK_TRANSFER' | 'CASH' | 'CHEQUE';
 export type EvidenceType = 'MOVE_IN' | 'MOVE_OUT' | 'MAINTENANCE' | 'INSPECTION';
 export type DisputeType = 'DEPOSIT_REFUND' | 'PROPERTY_DAMAGE' | 'UNPAID_RENT' | 'AGREEMENT_BREACH' | 'OTHER';
-export type DisputeStatus = 'OPEN' | 'UNDER_REVIEW' | 'RESOLVED' | 'CLOSED';
+export type DisputeStatus = 'FILED' | 'OPEN' | 'UNDER_REVIEW' | 'RESOLVED' | 'CLOSED' | 'DISMISSED';
 export type PropertyType = 'APARTMENT' | 'HOUSE' | 'VILLA' | 'COMMERCIAL' | 'PG' | 'OTHER';
-export type ListingStatus = 'ACTIVE' | 'RENTED' | 'INACTIVE';
+export type ListingStatus = 'DRAFT' | 'ACTIVE' | 'RENTED' | 'INACTIVE';
 export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
 export type TicketPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 
@@ -37,6 +37,8 @@ export interface Property {
   monthlyRent: number;
   securityDeposit: number;
   listingStatus: ListingStatus;
+  isFurnished?: boolean;
+  amenities?: string[];
   images?: PropertyImage[];
   createdAt: string;
 }
