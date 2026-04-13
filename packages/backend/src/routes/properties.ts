@@ -2,6 +2,7 @@ import { Router, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { authenticate, requireRole } from '../middleware/authenticate';
 import { upload } from '../middleware/upload';
+import { uploadLimiter } from '../middleware/rateLimiters';
 import { ipfsService } from '../services/ipfs/IPFSService';
 import {
   createProperty, getPropertyById, listProperties, updateProperty, addPropertyImage,
@@ -110,7 +111,7 @@ propertiesRouter.get('/:id/images', async (req, res: Response, next: NextFunctio
 
 // ─── POST /properties/:id/images ─────────────────────────────────────────────
 
-propertiesRouter.post('/:id/images', authenticate, upload.array('images', 10), async (req: AuthRequest, res: Response, next: NextFunction) => {
+propertiesRouter.post('/:id/images', authenticate, uploadLimiter, upload.array('images', 10), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const property = await getPropertyById(req.params["id"] as string);
     if (!property) { res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Property not found', statusCode: 404 } }); return; }

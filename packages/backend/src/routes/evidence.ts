@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { ethers } from 'ethers';
 import { authenticate } from '../middleware/authenticate';
 import { upload } from '../middleware/upload';
+import { uploadLimiter } from '../middleware/rateLimiters';
 import { AuthRequest, EvidenceType } from '../types';
 import { getAgreementById } from '../models/agreementModel';
 import { createEvidenceRecord, listEvidenceForAgreement, getEvidenceById, anchorEvidenceOnChain } from '../models/evidenceModel';
@@ -43,7 +44,7 @@ agreementEvidenceRouter.get('/', authenticate, async (req: AuthRequest, res: Res
 });
 
 // POST /agreements/:id/evidence/upload
-agreementEvidenceRouter.post('/upload', authenticate, upload.array('photos', 20), async (req: AuthRequest, res: Response, next: NextFunction) => {
+agreementEvidenceRouter.post('/upload', authenticate, uploadLimiter, upload.array('photos', 20), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const rawData = typeof req.body.data === 'string' ? JSON.parse(req.body.data) : req.body;
     const data = UploadEvidenceSchema.parse(rawData);

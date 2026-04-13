@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { ethers } from 'ethers';
 import { authenticate } from '../middleware/authenticate';
 import { upload } from '../middleware/upload';
+import { uploadLimiter } from '../middleware/rateLimiters';
 import { AuthRequest } from '../types';
 import { getAgreementById } from '../models/agreementModel';
 import { createPayment, listPaymentsForAgreement, anchorPaymentOnChain } from '../models/paymentModel';
@@ -37,7 +38,7 @@ agreementPaymentsRouter.get('/', authenticate, async (req: AuthRequest, res: Res
 });
 
 // POST /agreements/:id/payments
-agreementPaymentsRouter.post('/', authenticate, upload.single('receipt'), async (req: AuthRequest, res: Response, next: NextFunction) => {
+agreementPaymentsRouter.post('/', authenticate, uploadLimiter, upload.single('receipt'), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const data = RecordPaymentSchema.parse(
       typeof req.body.data === 'string' ? JSON.parse(req.body.data) : req.body

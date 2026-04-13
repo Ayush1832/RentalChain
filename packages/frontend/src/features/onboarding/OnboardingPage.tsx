@@ -65,7 +65,7 @@ export function OnboardingPage() {
   async function handleKYCSubmit(data: KYCData) {
     setIsSubmitting(true);
     try {
-      await api.post('/users/kyc', data);
+      await api.post('/users/me/kyc', data);
       toast.success('KYC submitted — awaiting admin review');
       setStep(3);
     } catch (err: any) {

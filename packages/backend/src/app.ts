@@ -39,12 +39,13 @@ app.use(requestLogger);
 
 // Global rate limits
 const apiLimiter = rateLimit({
-  windowMs: 60_000, // 1 minute
+  windowMs: 60_000,
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: { code: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests', statusCode: 429 } },
 });
+
 app.use('/api', apiLimiter);
 
 // Health check
