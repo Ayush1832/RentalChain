@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -18,15 +18,37 @@ const otpSchema = z.object({
 type PhoneForm = z.infer<typeof phoneSchema>;
 type OtpForm = z.infer<typeof otpSchema>;
 
+const OTP_EXPIRY = 300; // 5 minutes
+
 export function LoginPage() {
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
 
   const phoneForm = useForm<PhoneForm>({ resolver: zodResolver(phoneSchema) });
   const otpForm = useForm<OtpForm>({ resolver: zodResolver(otpSchema) });
+
+  function startCountdown() {
+    setCountdown(OTP_EXPIRY);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCountdown(c => {
+        if (c <= 1) {
+          clearInterval(timerRef.current!);
+          return 0;
+        }
+        return c - 1;
+      });
+    }, 1000);
+  }
+
+  useEffect(() => {
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, []);
 
   async function onSendOtp(data: PhoneForm) {
     setLoading(true);
@@ -34,9 +56,23 @@ export function LoginPage() {
       await api.post('/auth/send-otp', { phone: data.phone });
       setPhone(data.phone);
       setStep('otp');
+      startCountdown();
       toast.success('OTP sent to your phone');
     } catch {
       toast.error('Failed to send OTP. Try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function onResendOtp() {
+    setLoading(true);
+    try {
+      await api.post('/auth/send-otp', { phone });
+      startCountdown();
+      toast.success('OTP resent');
+    } catch {
+      toast.error('Failed to resend OTP.');
     } finally {
       setLoading(false);
     }
@@ -47,7 +83,12 @@ export function LoginPage() {
     try {
       const res = await api.post('/auth/verify-otp', { phone, otp: data.otp });
       setAuth(res.data.user, res.data.accessToken);
-      navigate('/dashboard');
+      // First-time users: send to onboarding
+      if (!res.data.user.fullName) {
+        navigate('/onboarding');
+      } else {
+        navigate('/dashboard');
+      }
     } catch {
       toast.error('Invalid OTP. Please try again.');
     } finally {
@@ -55,12 +96,16 @@ export function LoginPage() {
     }
   }
 
+  const mins = Math.floor(countdown / 60);
+  const secs = countdown % 60;
+  const timerLabel = countdown > 0 ? `${mins}:${secs.toString().padStart(2, '0')}` : null;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-white px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-brand-700">RentalChain</h1>
+          <Link to="/" className="text-3xl font-bold text-brand-700">RentalChain</Link>
           <p className="text-gray-500 mt-1 text-sm">Blockchain-secured rentals for India</p>
         </div>
 
@@ -85,6 +130,7 @@ export function LoginPage() {
                     placeholder="9876543210"
                     className="input-field rounded-l-none"
                     maxLength={10}
+                    autoFocus
                   />
                 </div>
                 {phoneForm.formState.errors.phone && (
@@ -114,6 +160,7 @@ export function LoginPage() {
                   placeholder="123456"
                   className="input-field text-center text-2xl tracking-widest"
                   maxLength={6}
+                  autoFocus
                 />
                 {otpForm.formState.errors.otp && (
                   <p className="text-red-500 text-xs mt-1">
@@ -122,13 +169,32 @@ export function LoginPage() {
                 )}
               </div>
 
+              {/* Timer + Resend */}
+              <div className="flex items-center justify-between text-sm">
+                {timerLabel ? (
+                  <p className="text-gray-400">
+                    OTP expires in <span className="font-mono font-medium text-gray-600">{timerLabel}</span>
+                  </p>
+                ) : (
+                  <p className="text-red-500 text-xs">OTP expired</p>
+                )}
+                <button
+                  type="button"
+                  onClick={onResendOtp}
+                  disabled={loading || countdown > 240}
+                  className="text-brand-600 hover:underline disabled:text-gray-400 disabled:no-underline text-xs font-medium"
+                >
+                  {countdown > 240 ? `Resend in ${countdown - 240}s` : 'Resend OTP'}
+                </button>
+              </div>
+
               <button type="submit" disabled={loading} className="btn-primary w-full">
                 {loading ? 'Verifying...' : 'Verify & Continue'}
               </button>
 
               <button
                 type="button"
-                onClick={() => setStep('phone')}
+                onClick={() => { setStep('phone'); setCountdown(0); }}
                 className="w-full text-sm text-gray-500 hover:text-gray-700"
               >
                 Change number

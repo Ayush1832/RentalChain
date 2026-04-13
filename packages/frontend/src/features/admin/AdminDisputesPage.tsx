@@ -13,7 +13,7 @@ const STATUS_COLORS: Record<string, string> = {
   DISMISSED: 'bg-gray-100 text-gray-500',
 };
 
-const RESOLUTION_OUTCOMES = ['LANDLORD_WINS', 'TENANT_WINS', 'MUTUAL_SETTLEMENT', 'DISMISSED'] as const;
+const RESOLUTION_OUTCOMES = ['TENANT_FAVOUR', 'LANDLORD_FAVOUR', 'MUTUAL', 'INCONCLUSIVE'] as const;
 
 export function AdminDisputesPage() {
   const { user } = useAuthStore();
@@ -33,7 +33,7 @@ export function AdminDisputesPage() {
 
   const resolveMutation = useMutation({
     mutationFn: ({ id, outcome, notes }: { id: string; outcome: string; notes: string }) =>
-      api.post(`/disputes/${id}/resolve`, { outcome, notes }),
+      api.put(`/disputes/${id}/resolve`, { outcome, notes }),
     onSuccess: () => {
       toast.success('Dispute resolved');
       queryClient.invalidateQueries({ queryKey: ['admin-disputes'] });
@@ -56,10 +56,10 @@ export function AdminDisputesPage() {
           className="input py-1.5 text-sm w-40"
         >
           <option value="">All statuses</option>
-          <option value="FILED">Filed</option>
+          <option value="OPEN">Open</option>
           <option value="UNDER_REVIEW">Under Review</option>
           <option value="RESOLVED">Resolved</option>
-          <option value="DISMISSED">Dismissed</option>
+          <option value="CLOSED">Closed</option>
         </select>
       </div>
 
@@ -93,7 +93,7 @@ export function AdminDisputesPage() {
                   <Link to={`/disputes/${d.id}`} className="btn-secondary text-xs py-1 px-3">
                     View
                   </Link>
-                  {d.status !== 'RESOLVED' && d.status !== 'DISMISSED' && d.status !== 'CLOSED' && (
+                  {d.status !== 'RESOLVED' && d.status !== 'CLOSED' && (
                     <button
                       onClick={() => setResolvingId(resolvingId === d.id ? null : d.id)}
                       className="btn-primary text-xs py-1 px-3"

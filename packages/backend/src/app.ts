@@ -13,6 +13,7 @@ import { agreementMaintenanceRouter, maintenanceRouter } from './routes/maintena
 import { disputesRouter } from './routes/disputes';
 import { verifyRouter } from './routes/verify';
 import { adminRouter } from './routes/admin';
+import { notificationsRouter } from './routes/notifications';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 
@@ -67,6 +68,7 @@ app.use('/api/v1/maintenance', maintenanceRouter);
 app.use('/api/v1/disputes', disputesRouter);
 app.use('/api/v1/verify', verifyRouter);
 app.use('/api/v1/admin', adminRouter);
+app.use('/api/v1/notifications', notificationsRouter);
 
 // 404
 app.use((_req, res) => {

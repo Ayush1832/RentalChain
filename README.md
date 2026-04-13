@@ -89,6 +89,7 @@ psql $DATABASE_URL -f migrations/1_create_users.sql
 psql $DATABASE_URL -f migrations/2_create_properties_agreements.sql
 psql $DATABASE_URL -f migrations/3_create_payments_evidence_disputes.sql
 psql $DATABASE_URL -f migrations/4_add_search_hashes.sql
+psql $DATABASE_URL -f migrations/5_fix_kyc_status_disputes.sql
 ```
 
 ### 5. Start the backend
