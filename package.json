@@ -5,7 +5,8 @@
   "workspaces": [
     "packages/contracts",
     "packages/backend",
-    "packages/frontend"
+    "packages/frontend",
+    "packages/mobile"
   ],
   "scripts": {
     "contracts": "npm run --workspace=packages/contracts",

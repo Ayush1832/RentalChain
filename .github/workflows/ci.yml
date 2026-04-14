@@ -113,6 +113,31 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
+  # -------------------------------------------------------------------
+  # Mobile — Type Check (EAS Build runs separately, not in CI)
+  # -------------------------------------------------------------------
+  mobile:
+    name: Mobile (Expo)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/mobile
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: packages/mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
   deploy-frontend:
     name: Deploy Frontend → Vercel
     runs-on: ubuntu-latest
