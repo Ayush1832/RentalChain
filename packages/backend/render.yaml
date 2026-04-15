@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: rentalchain-backend
+    runtime: node
+    rootDir: packages/backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: FAST2SMS_API_KEY
+        sync: false
+      - key: PINATA_API_KEY
+        sync: false
+      - key: PINATA_SECRET_KEY
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: SEPOLIA_RPC_URL
+        sync: false
+      - key: PLATFORM_WALLET_PRIVATE_KEY
+        sync: false
+      - key: IDENTITY_REGISTRY_ADDRESS
+        sync: false
+      - key: RENTAL_REGISTRY_ADDRESS
+        sync: false
