@@ -13,9 +13,6 @@ jobs:
   contracts:
     name: Contracts (Hardhat)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/contracts
 
     steps:
       - uses: actions/checkout@v4
@@ -24,16 +21,18 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: packages/contracts/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Compile contracts
         run: npm run compile
+        working-directory: packages/contracts
 
       - name: Run tests
         run: npm test
+        working-directory: packages/contracts
         env:
           REPORT_GAS: true
 
@@ -43,9 +42,6 @@ jobs:
   backend:
     name: Backend (Node.js)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/backend
 
     steps:
       - uses: actions/checkout@v4
@@ -54,13 +50,14 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: packages/backend/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Type check
         run: npx tsc --noEmit
+        working-directory: packages/backend
 
   # -------------------------------------------------------------------
   # Frontend — Type Check + Build
@@ -68,9 +65,6 @@ jobs:
   frontend:
     name: Frontend (React)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/frontend
 
     steps:
       - uses: actions/checkout@v4
@@ -79,21 +73,46 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: packages/frontend/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Type check
         run: npx tsc --noEmit
+        working-directory: packages/frontend
 
       - name: Build
         run: npm run build
+        working-directory: packages/frontend
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
   # -------------------------------------------------------------------
-  # Deploy — only on push to main, only if all CI jobs pass
+  # Mobile — Type Check (EAS Build runs separately, not in CI)
+  # -------------------------------------------------------------------
+  mobile:
+    name: Mobile (Expo)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Type check
+        run: npx tsc --noEmit
+        working-directory: packages/mobile
+
+  # -------------------------------------------------------------------
+  # Deploy Backend — only on push to main, only if all CI jobs pass
   # -------------------------------------------------------------------
   deploy-backend:
     name: Deploy Backend → Render
@@ -106,30 +125,8 @@ jobs:
         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
 
   # -------------------------------------------------------------------
-  # Mobile — Type Check (EAS Build runs separately, not in CI)
+  # Deploy Frontend — only on push to main, only if all CI jobs pass
   # -------------------------------------------------------------------
-  mobile:
-    name: Mobile (Expo)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/mobile
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: packages/mobile/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Type check
-        run: npx tsc --noEmit
-
   deploy-frontend:
     name: Deploy Frontend → Vercel
     runs-on: ubuntu-latest
@@ -143,11 +140,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: packages/frontend/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci
-        working-directory: packages/frontend
+        run: npm ci --legacy-peer-deps
 
       - name: Install Vercel CLI
         run: npm install -g vercel
