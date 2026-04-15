@@ -68,7 +68,7 @@ export default function DashboardScreen() {
           <>
             <ActionBtn emoji="💳" label="Pay Rent" onPress={() => router.push({ pathname: '/(tabs)/payments/new', params: { agreementId: activeAgreement.id } })} />
             <ActionBtn emoji="📸" label="Upload Evidence" onPress={() => router.push({ pathname: '/(tabs)/evidence/upload', params: { agreementId: activeAgreement.id } })} />
-            <ActionBtn emoji="🔧" label="Maintenance" onPress={() => router.push('/(tabs)/maintenance/index')} />
+            <ActionBtn emoji="🔧" label="Maintenance" onPress={() => router.push('/(tabs)/maintenance')} />
           </>
         )}
         {isLandlord && (
@@ -77,8 +77,8 @@ export default function DashboardScreen() {
             <ActionBtn emoji="➕" label="Add Property" onPress={() => router.push('/(tabs)/properties/new')} />
           </>
         )}
-        <ActionBtn emoji="⚖️" label="Disputes" onPress={() => router.push('/(tabs)/disputes/index')} />
-        <ActionBtn emoji="📄" label="Agreements" onPress={() => router.push('/(tabs)/agreements/index')} />
+        <ActionBtn emoji="⚖️" label="Disputes" onPress={() => router.push('/(tabs)/disputes')} />
+        <ActionBtn emoji="📄" label="Agreements" onPress={() => router.push('/(tabs)/agreements')} />
       </View>
 
       {/* Reputation */}

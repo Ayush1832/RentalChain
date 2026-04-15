@@ -83,9 +83,9 @@ export default function ProfileScreen() {
       {/* Actions */}
       <View style={styles.actions}>
         <MenuItem emoji="🪪" label="KYC Verification" onPress={() => router.push('/(tabs)/profile/kyc')} />
-        <MenuItem emoji="📄" label="My Agreements" onPress={() => router.push('/(tabs)/agreements/index')} />
-        <MenuItem emoji="💳" label="Payment History" onPress={() => router.push('/(tabs)/payments/index')} />
-        <MenuItem emoji="⚖️" label="My Disputes" onPress={() => router.push('/(tabs)/disputes/index')} />
+        <MenuItem emoji="📄" label="My Agreements" onPress={() => router.push('/(tabs)/agreements')} />
+        <MenuItem emoji="💳" label="Payment History" onPress={() => router.push('/(tabs)/payments')} />
+        <MenuItem emoji="⚖️" label="My Disputes" onPress={() => router.push('/(tabs)/disputes')} />
       </View>
 
       <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
